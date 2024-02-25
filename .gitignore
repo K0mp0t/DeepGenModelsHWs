@@ -1,0 +1,17 @@
+**
+**/**
+
+!README.md
+
+!styles.py
+!avatars/
+!avatars/**
+
+!generated_avatars
+!generated_avatars/**
+
+!anomaly_detection_metrics.png
+!Bayesian_style_generator.ipynb
+!latent_space_visualization.png
+!MNAD Unsupervised anomaly detection.ipynb
+!styles.py
