@@ -1,35 +1,31 @@
-# 2024 ITMO "Deep Generative models" course homework #1
+# 2024 ITMO "Deep Generative models" course homework #2
 
 ФИО: Иванов Пётр Алексеевич (в прошлом семестре был на курсе "Обработка и генерации изображений")
 
-## MLE Generated avatars (./generated_avatars)
+## Лог основных экспериментов
 
-### Polynomial model
+0. Gscale=0.5 Dscale=0.5 batch=1536 epochs=100
+1. Gscale=1 Dscale=1 batch=512 коллапс на 40й эпохе
+2. Gscale=1 Dscale=1 batch=512 добавил функций активации и батч-нормализации
+3. Gscale=1 Dscale=0.5 batch=768 немного изменил размерности в CSPup + добавил дополнительный forward pass для генератора
 
-<img src="./generated_avatars/polynomial/0.jpg" width="128"/>
-<img src="./generated_avatars/polynomial/1.jpg" width="128"/>
-<img src="./generated_avatars/polynomial/2.jpg" width="128"/>
-<img src="./generated_avatars/polynomial/3.jpg" width="128"/>
-<img src="./generated_avatars/polynomial/4.jpg" width="128"/>
+## Результаты наиболее удачного эксперимента
 
-### Additive smoothing
-<img src="./generated_avatars/additive_smoothing/0.jpg" width="128"/>
-<img src="./generated_avatars/additive_smoothing/1.jpg" width="128"/>
-<img src="./generated_avatars/additive_smoothing/2.jpg" width="128"/>
-<img src="./generated_avatars/additive_smoothing/3.jpg" width="128"/>
-<img src="./generated_avatars/additive_smoothing/4.jpg" width="128"/>
+![Epochswise generation results](exp/3.gif)
 
-## Unsupervised anomaly detection w/ MNAD
+![Loss fn plot](loss_fn_plt.png)
+![Real vs fake data distribution](real_vs_fake_data_distribution.png)
+![Real vs fake data discriminator preds](real_vs_fake_data_discriminator_preds.png)
 
-[MNAD paper](https://openaccess.thecvf.com/content_CVPR_2020/papers/Park_Learning_Memory-Guided_Normality_for_Anomaly_Detection_CVPR_2020_paper.pdf)
-[MNAD repository](https://github.com/cvlab-yonsei/MNAD)
+## Краткий список того, что я сделал ради сходимости:
 
-My memory implementation might differ a little from official MNAD implementation. However, it is based on MNAD paper and official repository. I've used all the loss functions as MNAD paper suggested (reconstruction, compactness and separatness loss)
+1. Модифицировал CSPup блоки за счет добавления дополнительных функций активации и батч-нормализаций
+2. Использовал довольно большой размер батча (768). Это очень сильно стабилизировало обучение, при размере батча 256 все было не так гладко.
+3. Использовал label_smoothing чтобы поверхность ФП для дискриминатора была "помягче"
+4. НЕ использовал полносвязные слои (где-то читал, что это помогает)
+5. Подобрал параметры для оптимизаторов (D lr=0.0002, betas=(0.5, 0.999), G lr=0.001, betas=(0.5, 0.999)). Дискриминатору обучаемость ограничил за счет lr, обоим оптимизаторам уменьшил первую бету чтобы было меньше коллапсов (за счет уменьшения первого момента алгоритм оптимизации может выбраться из состояния коллапса).
+6. Вместо ReLU на выходе генератора использовал tanh (это из предыдущего опыта взял), соответственно и данные отскейлил в [-1, 1]
+7. Train loop я взял из своей работы по детекции аномалий на ганах из курса "Обработка и генерация изображений" (но и его потом немного поменял: добавил дополнительный forward pass для генератора после обновления весов дискриминатора)
 
-I've tried to estimate loss threshold twice: for train data (red line) and for test data (green line). As we can see, train estimated threshold is close to optimal
 
-<img src="./anomaly_detection_metrics.png" width="768"/>
 
-Latent space visualization with PCA, SVD and t-SNE decomposition. PCA and t-SNE show separability.
-
-<img src="./latent_space_visualization.png"/>
