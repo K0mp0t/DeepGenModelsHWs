@@ -2,11 +2,7 @@
 **/**
 
 !README.md
-!exp/
-!exp/**
 
-!CelebA GAN.ipynb
-!loss_fn_plt.png
-!real_vs_fake_data_discriminator_preds.png
-!real_vs_fake_data_distribution.png
-!requirements.txt
+!StyleGanv2HW.ipynb
+!imgs/
+!imgs/**
