@@ -3,6 +3,10 @@
 
 !README.md
 
-!StyleGanv2HW.ipynb
-!imgs/
-!imgs/**
+!ControlNet.ipynb
+!DreamBooth_Stable_Diffusion.ipynb
+
+!report_images
+!report_images/**
+!instance_images/
+!instance_images/**
